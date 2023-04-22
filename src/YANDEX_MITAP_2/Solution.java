@@ -1,7 +1,6 @@
 package YANDEX_MITAP_2;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,59 +8,57 @@ import java.util.List;
 public class Solution {
 
     public static void main(String[] args) {
-        System.out.println(solve("src/YANDEX_MITAP_2/input.txt"));
+        solve("src/YANDEX_MITAP_2/input.txt");
     }
 
-    public static int solve(String path) {
+    public static void solve(String path) {
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(path))){
             String line = bufferedReader.readLine();
-            int n = Integer.parseInt(String.valueOf(line.charAt(0)));
-            int m = Integer.parseInt(String.valueOf(line.charAt(2)));
+            String[] str = line.split(" ");
+            int n = Integer.parseInt(String.valueOf(str[0]));
+            int m = Integer.parseInt(String.valueOf(str[1]));
 
             line = bufferedReader.readLine();
-            List<Integer> plates = new ArrayList<>();
+            List<Long> plates = new ArrayList<>();
             String[] split = line.split(" ");
             for(int i = 0; i < n; i++) {
-                plates.add(Integer.parseInt(split[i]));
+                plates.add(Long.parseLong(split[i]));
             }
             line = bufferedReader.readLine();
-            List<Integer> guards = new ArrayList<>();
+            List<Long> guards = new ArrayList<>();
             split = line.split(" ");
             for(int i = 0; i < m; i++) {
-                guards.add(Integer.parseInt(split[i]));
+                guards.add(Long.parseLong(split[i]));
             }
 
-            // Отсюда алгоритм
-
-            List<Integer> temp = new ArrayList<>();
+            List<Long> temp = new ArrayList<>();
             temp.add(plates.get(n-1));
-            int cover = plates.get(n-1);
-            int max = Collections.max(plates);
+            Long cover = plates.get(n-1);
 
-            for(int i = n-1; i >= 0; i--) {
+            for(int i = n-2; i >= 0; i--) {
                 if(plates.get(i) > cover) {
-                    temp.add(plates.get(i)-cover);
+                    temp.add(0, plates.get(i)-cover);
                     cover = plates.get(i);
                 }
             }
 
-            int result = 0;
+            Long result = 0L;
+            Collections.sort(temp);
 
-            for (Integer guard : guards) {
-                for (int i = 0; i < temp.size(); i++) {
-                    if (temp.get(i) >= guard) {
+            for (Long aLong : temp) {
+                for (Long guard : guards) {
+                    if (aLong >= guard) {
                         result++;
-                        temp.remove(i);
+                        guards.remove(guard);
                         break;
                     }
                 }
             }
 
-            return result;
+            System.out.println(result);
         }
         catch (Exception e) {
             e.printStackTrace();
-            return -1;
         }
     }
 

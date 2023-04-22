@@ -2,7 +2,6 @@ package YANDEX_MITAP_1;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.*;
 
 public class Solution {
 
@@ -17,54 +16,37 @@ public class Solution {
     public static void cockteil(String path) {
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(path))){
 
-            String line = bufferedReader.readLine();
-            int m = Integer.parseInt(String.valueOf(line.charAt(0)));
-            List<String> layer = new ArrayList<>();
-            for(int i = 0; i < m; i++) {
-                line = bufferedReader.readLine();
-                layer.add(line);
-            }
+            String[] lineArray = bufferedReader.readLine().split(" ");
 
-            line = bufferedReader.readLine();
-            int k = Integer.parseInt(String.valueOf(line.charAt(0)));
-            String[] name = new String[k];
-            int[] count = new int[k];
-            String[] symbol = new String[k];
-            for(int i = 0; i < k; i++){
-                line = bufferedReader.readLine();
-                String[] split = line.split(" ");
-                name[i] = split[0];
-                count[i] = Integer.parseInt(split[1]);
-                symbol[i] = split[2];
-            }
+            int n = Integer.parseInt(lineArray[0]);
+            int m = Integer.parseInt(lineArray[1]);
+            int size = n * m + n;
+            char[] charBuf = new char[size];
 
-            // отсюда сам алгоритм
+            bufferedReader.read(charBuf, 0, size);
+            String result = String.copyValueOf(charBuf, 0, size);
 
-            List<String> resultList = new ArrayList<>();
-            resultList.add(layer.get(layer.size()-1));
-            int temp = layer.size()-2;
+            int k = Integer.parseInt(bufferedReader.readLine());
+            int temp = 0;
+            ++m;
 
-            for (int a = 0; a < k; a++) {
-                String currentSymbol = symbol[a];
-                int border = temp - count[a];
+            for(int j = k; j > 0; --j) {
+                String[] split = bufferedReader.readLine().split(" ");
+                int count = Integer.parseInt(split[1]);
+                String symbol = split[2];
 
-                for (int i = temp; i > border; i--) {
-                    String currentLine = layer.get(i);
-                    resultList.add(currentLine.replaceAll(" ", currentSymbol));
-                    temp = i-1;
+                for(int i = m * (n - temp - 1 ) - 1; i >= ((n-1- count - temp) * m); --i) {
+                    if(result.charAt(i) == ' ') {
+                        result = result.substring(0, i) + symbol + result.substring(i + 1);
+                    }
                 }
+                temp += count;
             }
-            for(int i = temp; i >= 0; i--){
-                resultList.add(layer.get(i));
-            }
-
-            Collections.reverse(resultList);
-            resultList.forEach(System.out::println);
+            System.out.println(result);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 }
